@@ -7,6 +7,7 @@
 | Version | Date | Commit |
 |:-------:|:----:|--------|
 | 0.0.1 | 16/08/2022 | GDD's draft version |
+| 0.0.2 | 22/08/2022 | Added Unique Points and Conceptual Art |
 
 🎮️ **Name of the game**: Tatako Gemu
 
@@ -72,4 +73,10 @@ Tatako Gemu has a lot of references from wich is based.
 
 It has characteristics like the Role Based gameplay like Among Us, Werewolf and Town of Salem, therefore each role also has a different goal.
 
-The difference between Tatako Gemy
+The difference between Tatako Gemu and other games is that the players, aside from not knowing what is the goal of each survival, each survival has unique functions that they can execute.
+
+So the players will need to rely on each other to complete tasks quickly or they will sink before they can even see land.
+
+### Conceptual Art 
+
+The goal is to have an art style more cartoonish than real, a style similar to Fall Guys and Castle Crashers is the goal.

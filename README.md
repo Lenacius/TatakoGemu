@@ -8,6 +8,7 @@
 |:-------:|:----:|--------|
 | 0.0.1 | 16/08/2022 | GDD's draft version |
 | 0.0.2 | 22/08/2022 | Added Unique Points and Conceptual Art |
+| 0.0.3 | 22/08/2022 | Added Images to the Conceptual Art |
 
 🎮️ **Name of the game**: Tatako Gemu
 
@@ -80,3 +81,6 @@ So the players will need to rely on each other to complete tasks quickly or they
 ### Conceptual Art 
 
 The goal is to have an art style more cartoonish than real, a style similar to Fall Guys and Castle Crashers is the goal.
+
+
+<img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/pt_BR/games/switch/c/castle-crashers-remastered-switch/hero" width="500" height="400"/> <img src="https://cdn1.epicgames.com/offer/50118b7f954e450f8823df1614b24e80/pt-BR_FallGuysSS1_OfferImage_2560x1440_2560x1440-0d2f178d6c01871df1b2e0d3a459ffd6" width="500" height="400"/>

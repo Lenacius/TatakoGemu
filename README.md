@@ -7,6 +7,7 @@
 | Version | Date | Commit |
 |:-------:|:----:|--------|
 | 0.0.1 | 16/08/2022 | GDD's draft version |
+| 0.1.0 | 22/08/2022 | High Concept Done |
 
 🎮️ **Name of the game**: Tatako Gemu
 

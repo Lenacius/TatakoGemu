@@ -7,8 +7,6 @@
 | Version | Date | Commit |
 |:-------:|:----:|--------|
 | 0.0.1 | 16/08/2022 | GDD's draft version |
-| 0.0.2 | 22/08/2022 | Added Unique Points and Conceptual Art |
-| 0.0.3 | 22/08/2022 | Added Images to the Conceptual Art |
 
 🎮️ **Name of the game**: Tatako Gemu
 

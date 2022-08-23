@@ -14,8 +14,9 @@
 👥 **Stakeholders**: @lenacius (a.k.a. Isamu Sato)
 
 # **Overview** #
----
+
 ## 📐 **High Concept** ##
+&emsp; <details open><summary>_Show/Hide_</summary>
 
 ### 🗣 Introduction
 
@@ -83,3 +84,5 @@ The goal is to have an art style more cartoonish than real, a style similar to F
 
 
 <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/pt_BR/games/switch/c/castle-crashers-remastered-switch/hero" width="500" height="400"/> <img src="https://cdn1.epicgames.com/offer/50118b7f954e450f8823df1614b24e80/pt-BR_FallGuysSS1_OfferImage_2560x1440_2560x1440-0d2f178d6c01871df1b2e0d3a459ffd6" width="500" height="400"/>
+
+</details>

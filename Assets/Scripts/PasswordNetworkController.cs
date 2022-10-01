@@ -91,15 +91,23 @@ public class PasswordNetworkController : MonoBehaviour
         switch (NetworkManager.Singleton.ConnectedClients.Count) // comment switch when official
         {
             case 1:
-                spawnPos = new Vector3(0f, 0f, 0f);
+                spawnPos = new Vector3(0f, 0f, -6f);
                 spawnRot = Quaternion.Euler(0f, 180f, 0f);
                 break;
             case 2:
-                spawnPos = new Vector3(2f, 0f, 0f);
+                spawnPos = new Vector3(2f, 0f, -6f);
                 spawnRot = Quaternion.Euler(0f, 225f, 0f);
                 break;
             case 3:
-                spawnPos = new Vector3(-2f, 0f, 0f);
+                spawnPos = new Vector3(-2f, 0f, -6f);
+                spawnRot = Quaternion.Euler(0f, 135f, 0f);
+                break;
+            case 4:
+                spawnPos = new Vector3(4f, 0f, -6f);
+                spawnRot = Quaternion.Euler(0f, 135f, 0f);
+                break;
+            case 5:
+                spawnPos = new Vector3(-4f, 0f, -6f);
                 spawnRot = Quaternion.Euler(0f, 135f, 0f);
                 break;
         }

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7348102933136069082}
   - component: {fileID: -4168921696011996159}
   - component: {fileID: 848898518619075861}
+  - component: {fileID: 8853239592560627131}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -67,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b1ae0e73b0d817d44901f5db46a0de32, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -183,3 +184,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 951415f9072aa7f47b06f8fba0162964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8853239592560627131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7360342957077024659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e974ec3cca26e9846af7408ba67a997f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particlePrefab: {fileID: 1068600006586292472, guid: 9d4c7be06c579534b922056411320687, type: 3}

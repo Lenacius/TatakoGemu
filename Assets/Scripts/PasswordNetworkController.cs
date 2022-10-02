@@ -8,6 +8,7 @@ public class PasswordNetworkController : MonoBehaviour
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private GameObject passwordEntryUI;
     [SerializeField] private GameObject leaveButton;
+    [SerializeField] private GameObject teamPicker;
 
     private void Start()
     {
@@ -50,6 +51,7 @@ public class PasswordNetworkController : MonoBehaviour
 
         passwordEntryUI.SetActive(true);
         leaveButton.SetActive(false);
+        teamPicker.SetActive(false);
     }
 
     private void HandleServerStarted()
@@ -66,6 +68,7 @@ public class PasswordNetworkController : MonoBehaviour
         {
             passwordEntryUI.SetActive(false);
             leaveButton.SetActive(true);
+            teamPicker.SetActive(true);
         }
     }
 
@@ -75,6 +78,7 @@ public class PasswordNetworkController : MonoBehaviour
         {
             passwordEntryUI.SetActive(true);
             leaveButton.SetActive(false);
+            teamPicker.SetActive(false);
         }
     }
 
@@ -91,23 +95,23 @@ public class PasswordNetworkController : MonoBehaviour
         switch (NetworkManager.Singleton.ConnectedClients.Count) // comment switch when official
         {
             case 1:
-                spawnPos = new Vector3(0f, 0f, -6f);
+                spawnPos = new Vector3(0f, 2f, -6f);
                 spawnRot = Quaternion.Euler(0f, 180f, 0f);
                 break;
             case 2:
-                spawnPos = new Vector3(2f, 0f, -6f);
+                spawnPos = new Vector3(2f, 2f, -6f);
                 spawnRot = Quaternion.Euler(0f, 225f, 0f);
                 break;
             case 3:
-                spawnPos = new Vector3(-2f, 0f, -6f);
+                spawnPos = new Vector3(-2f, 2f, -6f);
                 spawnRot = Quaternion.Euler(0f, 135f, 0f);
                 break;
             case 4:
-                spawnPos = new Vector3(4f, 0f, -6f);
+                spawnPos = new Vector3(4f, 2f, -6f);
                 spawnRot = Quaternion.Euler(0f, 135f, 0f);
                 break;
             case 5:
-                spawnPos = new Vector3(-4f, 0f, -6f);
+                spawnPos = new Vector3(-4f, 2f, -6f);
                 spawnRot = Quaternion.Euler(0f, 135f, 0f);
                 break;
         }

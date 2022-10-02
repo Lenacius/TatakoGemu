@@ -7,18 +7,12 @@ public class PlayerController : NetworkBehaviour
 
     private Vector3 player_movement = new Vector3();
 
-    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
-
     private void Update()
     {
-        if(IsClient)
-            MoveServerRpc();
-
-        transform.position = Position.Value;
+        if (IsOwner) { Move(); }
     }
 
-    [ServerRpc]
-    private void MoveServerRpc(ServerRpcParams rpcParams = default)
+    private void Move()
     {
         player_movement = Vector3.zero;
 
@@ -32,6 +26,6 @@ public class PlayerController : NetworkBehaviour
         else if (Input.GetKey(KeyCode.D))
             player_movement += new Vector3(SPEED, 0f, 0f);
 
-        Position.Value += player_movement * Time.deltaTime;
+        transform.position += player_movement * Time.deltaTime;
     }
 }

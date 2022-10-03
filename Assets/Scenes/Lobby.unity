@@ -827,6 +827,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 452634080}
     m_Modifications:
+    - target: {fileID: -502079411094450993, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1435267383
+      objectReference: {fileID: 0}
     - target: {fileID: 4195625530422086193, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -934,6 +938,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 452634080}
     m_Modifications:
+    - target: {fileID: -502079411094450993, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3091711202
+      objectReference: {fileID: 0}
     - target: {fileID: 4195625530422086193, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -2251,6 +2259,11 @@ MonoBehaviour:
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 4195625530422086349, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 1
@@ -2570,6 +2583,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 452634080}
     m_Modifications:
+    - target: {fileID: -502079411094450993, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 51736971
+      objectReference: {fileID: 0}
     - target: {fileID: 4195625530422086193, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -2632,6 +2649,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 452634080}
     m_Modifications:
+    - target: {fileID: -502079411094450993, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 355969862
+      objectReference: {fileID: 0}
     - target: {fileID: 4195625530422086193, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -3160,6 +3181,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 452634080}
     m_Modifications:
+    - target: {fileID: -502079411094450993, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3285192039
+      objectReference: {fileID: 0}
     - target: {fileID: 4195625530422086193, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -3228,7 +3253,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &6728309575278350609
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3337,8 +3362,8 @@ MonoBehaviour:
   underwaterColorStrength: 0
   underwaterRefractionStrength: 0.099
   surfaceFoamTexture: {fileID: 2800000, guid: d3b0d77dfe711a04c8ff18ecc260aa66, type: 3}
-  surfaceFoamSampling: {x: 0.62, y: 0}
-  surfaceFoamCutoff: 0.62
+  surfaceFoamSampling: {x: 0.632, y: 0}
+  surfaceFoamCutoff: 0.632
   surfaceFoamDistortion: 0
   surfaceFoamBlend: 1
   surfaceFoamColor1: {r: 1, g: 1, b: 1, a: 0.3215686}
@@ -3348,11 +3373,11 @@ MonoBehaviour:
   surfaceFoamDirection2: 0.47
   surfaceFoamSpeed1: 0
   surfaceFoamSpeed2: 0.01
-  surfaceFoamTilingAndOffset: {x: -1, y: -1, z: 0.57, w: 0.22}
+  surfaceFoamTilingAndOffset: {x: -1, y: -1, z: 0.57, w: 2}
   surfaceFoamOffsetX: -1
   surfaceFoamOffsetY: -1
   surfaceFoamScale1: 0.57
-  surfaceFoamScale2: 0.22
+  surfaceFoamScale2: 2
   enableSurfaceFoam: 1
   surfaceFoamHeightMask: 0
   surfaceFoamHeightMaskSmoothness: 0

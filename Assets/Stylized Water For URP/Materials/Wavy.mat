@@ -119,7 +119,7 @@ Material:
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _FoamShadowDepth: 10
-    - _FoamShadowStrength: 0.45
+    - _FoamShadowStrength: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -178,9 +178,9 @@ Material:
     - _SurfaceFoamMovement: {r: 0.7, g: 0, b: 0.47, a: 0.01}
     - _SurfaceFoamSampling: {r: 0.56, g: 0, b: 0, a: 0}
     - _SurfaceFoamTilingAndOffset: {r: -1, g: -1, b: 0.77, a: 0.22}
-    - _WaterColorDeep: {r: 0.01176471, g: 0.2861555, b: 0.50980073, a: 1}
-    - _WaterColorHorizon: {r: 0, g: 0.227332, b: 0.8, a: 1}
-    - _WaterColorShallow: {r: 0.2747419, g: 0.3962264, b: 0.37279284, a: 0.5019608}
+    - _WaterColorDeep: {r: 0, g: 0, b: 0, a: 1}
+    - _WaterColorHorizon: {r: 0, g: 0, b: 0, a: 1}
+    - _WaterColorShallow: {r: 0, g: 0, b: 0, a: 0.5019608}
     - _WaterColorUnderwater: {r: 0.031149892, g: 0.33903313, b: 0.9433962, a: 0}
     - _WaveColor: {r: 0, g: 0, b: 0, a: 0}
     - _WaveDirections: {r: 0.158, g: 0.64, b: 1, a: 0.33}

@@ -9,11 +9,16 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private bool was_swimming = false;
     [SerializeField] private bool is_midair = false;
 
+    [SerializeField] private const float ANG_SPEED = 180.0f;
+
     private Vector3 player_movement = new Vector3();
 
     private void Update()
     {
-        if (IsOwner) { Move(); }
+        if (IsOwner) {
+            Move();
+            Rotate();
+        }
     }
 
     private void Move()
@@ -41,6 +46,14 @@ public class PlayerController : NetworkBehaviour
             
 
         transform.position += player_movement * Time.deltaTime;
+    }
+
+    private void Rotate()
+    {
+
+        if(Input.GetAxis("Mouse X") > 0) transform.Rotate(new Vector3(0, ANG_SPEED * Time.deltaTime, 0));
+        else if(Input.GetAxis("Mouse X") < 0) transform.Rotate(new Vector3(0, -ANG_SPEED * Time.deltaTime, 0));
+
     }
 
     private void OnTriggerEnter(Collider other)

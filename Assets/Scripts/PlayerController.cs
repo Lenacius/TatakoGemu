@@ -26,14 +26,14 @@ public class PlayerController : NetworkBehaviour
         player_movement = Vector3.zero;
 
         if (Input.GetKey(KeyCode.W))
-            player_movement += new Vector3(0f, 0f, SPEED);
-        else if(Input.GetKey(KeyCode.S))
-            player_movement += new Vector3(0f, 0f, -SPEED);
+            player_movement += -this.transform.forward * SPEED;
+        else if (Input.GetKey(KeyCode.S))
+            player_movement += this.transform.forward * SPEED;
 
         if (Input.GetKey(KeyCode.A))
-            player_movement += new Vector3(-SPEED, 0f, 0f);
+            player_movement += this.transform.right * SPEED;
         else if (Input.GetKey(KeyCode.D))
-            player_movement += new Vector3(SPEED, 0f, 0f);
+            player_movement += -this.transform.right * SPEED;
 
         if (is_swimming || was_swimming)
             player_movement /= 2;

@@ -5,6 +5,7 @@ using Unity.Netcode;
 using UnityEngine.SceneManagement;
 public class NetworkSceneController : NetworkBehaviour
 {
+    
     public void GotoStage1()
     {
         GameObject.Destroy(GameObject.Find("Level"));

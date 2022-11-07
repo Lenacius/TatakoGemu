@@ -16,6 +16,9 @@ public class PlayerController : NetworkBehaviour
     private void Update()
     {
         if (IsOwner) {
+
+            //Cursor.lockState = CursorLockMode.Locked;
+
             Move();
             Rotate();
         }

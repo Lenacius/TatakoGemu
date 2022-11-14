@@ -38,14 +38,11 @@ public class PortalStage : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (IsOwner)
-        {
-            NetworkObject player = NetworkManager.Singleton.ConnectedClients[NetworkManager.Singleton.LocalClientId].PlayerObject;
+        NetworkObject player = NetworkManager.Singleton.ConnectedClients[NetworkManager.Singleton.LocalClientId].PlayerObject;
 
-            player.transform.position = transform.position;
+        player.transform.position = transform.position;
 
-            this.playerCount.Value++;
-        }
+        this.playerCount.Value++;
     }
 
 }

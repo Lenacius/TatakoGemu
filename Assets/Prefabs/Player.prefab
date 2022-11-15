@@ -263,11 +263,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 6846805928232085222}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcbc189da8a468c49b21868611def7c7, type: 3}
+  m_Script: {fileID: 11500000, guid: 066110117c4ec75439214ef69257948a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mov_speed: 2
   is_swimming: 0
-  is_midair: 0
+  was_swimming: 0
+  rot_speed: 180
+  jump_acceleration: 0
+  is_jumping: 0
+  character_movement: {x: 0, y: 0, z: 0}
 --- !u!114 &-4489491591572446947
 MonoBehaviour:
   m_ObjectHideFlags: 0

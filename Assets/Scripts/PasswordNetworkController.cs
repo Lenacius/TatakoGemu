@@ -86,7 +86,7 @@ public class PasswordNetworkController : MonoBehaviour
         {
             passwordEntryUI.SetActive(false);
             leaveButton.SetActive(true);
-            teamPicker.SetActive(true);
+            //teamPicker.SetActive(true);
         }
     }
 
@@ -96,7 +96,7 @@ public class PasswordNetworkController : MonoBehaviour
         {
             passwordEntryUI.SetActive(true);
             leaveButton.SetActive(false);
-            teamPicker.SetActive(false);
+            //teamPicker.SetActive(false);
         }
     }
 

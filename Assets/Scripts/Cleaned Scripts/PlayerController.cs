@@ -3,18 +3,15 @@ using UnityEngine;
 
 public class PlayerController : CharacterController
 {
-    public override void OnNetworkSpawn()
+
+    private void Start()
     {
-        //base.OnNetworkSpawn();
-        DeleteNonPlayerCameras();
+        if (IsOwner) ChangeCameraToPlayer();
     }
 
     void Update()
     {
-        if (IsOwner)
-        {
-            PlayerMovement();
-        }
+        if (IsOwner) PlayerMovement();
     }
 
     private void PlayerMovement()
@@ -31,19 +28,12 @@ public class PlayerController : CharacterController
         else if (Input.GetAxis("Mouse X") < 0) Rotate(Direction.LEFT);
     }
 
-    [SerializeField] private Camera player_camera;
-    private void DeleteNonPlayerCameras()
+    private void ChangeCameraToPlayer()
     {
-        GetPlayerCamera();
-        foreach(Camera camera in Camera.allCameras)
-        {
-            if (camera != player_camera)
-                Destroy(camera.gameObject);
-        }
+        Transform main_camera = GameObject.Find("Main Camera").transform;
+        main_camera.parent = transform;
+        main_camera.localPosition = new Vector3(0, 6, 4);
+        main_camera.localRotation = Quaternion.Euler(new Vector3(45, -180, 0));
     }
 
-    private void GetPlayerCamera()
-    {
-        player_camera = GetComponentInChildren<Camera>();
-    }
 }

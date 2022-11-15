@@ -10,9 +10,8 @@ public class PasswordNetworkController : MonoBehaviour
     [SerializeField] private TMP_InputField nameInputField;
     [SerializeField] private GameObject passwordEntryUI;
     [SerializeField] private GameObject leaveButton;
-    [SerializeField] private GameObject teamPicker;
-
-    //private static Dictionary<ulong, string> roomData;
+    [SerializeField] private GameObject readyButton;
+    [SerializeField] private GameObject startButton;
 
     private void Start()
     {
@@ -30,13 +29,9 @@ public class PasswordNetworkController : MonoBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
     }
 
-    public void Host() { // host does not count in the connected client count
-        //roomData = new Dictionary<ulong, string>();
-        //roomData[NetworkManager.Singleton.LocalClientId] = passwordInputField.text;
-
+    public void Host() {
         NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
         NetworkManager.Singleton.StartHost();
-        //Debug.Log("Numero de jogadores: " + NetworkManager.Singleton.ConnectedClients.Count);
     }
 
     struct Player
@@ -45,18 +40,12 @@ public class PasswordNetworkController : MonoBehaviour
         public string password;
     }
     public void Client() {
-        //Player player = new Player();
-        //player.name = nameInputField.text;
-        //player.password = passwordInputField.text;
-        //byte[] data = Encoding.ASCII.GetBytes(JsonUtility.ToJson(player));
-        //Debug.Log(JsonUtility.ToJson(player));
         NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes(passwordInputField.text);
-        //NetworkManager.Singleton.NetworkConfig.ConnectionData = data;
         NetworkManager.Singleton.StartClient();
-        //Debug.Log("Numero de jogadores: " + NetworkManager.Singleton.ConnectedClients.Count);
     }
 
     public void Leave() {
+        NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().ChangeCameraToWorld();
         if (NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.Shutdown();
@@ -69,7 +58,6 @@ public class PasswordNetworkController : MonoBehaviour
 
         passwordEntryUI.SetActive(true);
         leaveButton.SetActive(false);
-        teamPicker.SetActive(false);
     }
 
     private void HandleServerStarted()
@@ -86,7 +74,8 @@ public class PasswordNetworkController : MonoBehaviour
         {
             passwordEntryUI.SetActive(false);
             leaveButton.SetActive(true);
-            //teamPicker.SetActive(true);
+            if (NetworkManager.Singleton.IsClient) readyButton.SetActive(true);
+            else if (NetworkManager.Singleton.IsHost) startButton.SetActive(true);
         }
     }
 
@@ -96,32 +85,17 @@ public class PasswordNetworkController : MonoBehaviour
         {
             passwordEntryUI.SetActive(true);
             leaveButton.SetActive(false);
-            //teamPicker.SetActive(false);
+            readyButton.SetActive(false);
+            startButton.SetActive(false);
         }
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
-        //if (NetworkManager.Singleton.IsHost)
-        //{
-        //    response.Approved = true;
-        //    response.CreatePlayerObject = true;
-        //    response.PlayerPrefabHash = null;
-        //    response.Position = new Vector3(0f, 1f, -6f);
-        //    response.Rotation = Quaternion.Euler(0f, 180f, 0f);
-        //    response.Pending = false;
-        //    return;
-        //}
-
         var clientId = request.ClientNetworkId;
         var connectionData = request.Payload;
-        //byte[] connectionData = request.Payload;
-        //Player payload = new Player();
-        //payload = JsonUtility.FromJson<Player>(Encoding.ASCII.GetString(connectionData));
-        //Debug.Log(roomData[NetworkManager.Singleton.LocalClientId]);
+
         bool approveConnection = Encoding.ASCII.GetString(connectionData) == passwordInputField.text;
-        //bool approveConnection = payload.password == passwordInputField.text;
-        Debug.Log(Encoding.ASCII.GetString(connectionData));
 
         Vector3 spawnPos = Vector3.zero;
         Quaternion spawnRot = Quaternion.identity;
@@ -157,4 +131,9 @@ public class PasswordNetworkController : MonoBehaviour
         response.Rotation = spawnRot;
         response.Pending = false;
     }
+
+    //public void Ready()
+    //{
+    //    if(NetworkManager.Singleton.Is)
+    //}
 }

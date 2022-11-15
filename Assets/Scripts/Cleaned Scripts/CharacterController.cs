@@ -9,8 +9,6 @@ public class CharacterController : NetworkBehaviour
 
     [SerializeField] private float rot_speed = 180.0f;
 
-    [SerializeField] private float jump_acceleration = 0.0f;
-    [SerializeField] private const float max_acceleration = 200.0f;
     [SerializeField] private bool is_jumping = false;
 
     [SerializeField] private Vector3 character_movement = new Vector3();

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerController : CharacterController
 {
+    [SerializeField] private NetworkVariable<bool> is_ready = new NetworkVariable<bool>(false);
 
     private void Start()
     {
@@ -34,6 +35,14 @@ public class PlayerController : CharacterController
         main_camera.parent = transform;
         main_camera.localPosition = new Vector3(0, 6, 4);
         main_camera.localRotation = Quaternion.Euler(new Vector3(45, -180, 0));
+    }
+
+    public void ChangeCameraToWorld()
+    {
+        Transform main_camera = GameObject.Find("Main Camera").transform;
+        main_camera.parent = null;
+        main_camera.localPosition = new Vector3(0, 6, 4);
+        main_camera.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
     }
 
 }

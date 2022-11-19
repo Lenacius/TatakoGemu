@@ -2869,19 +2869,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1267231273}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1275504260}
-        m_TargetAssemblyTypeName: PasswordNetworkController, Assembly-CSharp
-        m_MethodName: Leave
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &1267231273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2964,6 +2952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb9303055dcc0824f990c3fb0d2ed2ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 528796120}
   passwordInputField: {fileID: 1409664178}
   nameInputField: {fileID: 1416839979}
   passwordEntryUI: {fileID: 2118048443}

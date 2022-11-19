@@ -1,17 +1,46 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class PlayerController : CharacterController
 {
-    [SerializeField] private NetworkVariable<bool> is_ready = new NetworkVariable<bool>(false);
+    [SerializeField] public NetworkVariable<bool> is_ready = new NetworkVariable<bool>(false);
+    [SerializeField] public List<bool> client_ready;
+    [SerializeField] public List<ulong> client_id;
 
+    public GameObject ready;
     private void Start()
     {
-        if (IsOwner) ChangeCameraToPlayer();
+        if (IsOwner)
+        {
+            ChangeCameraToPlayer();
+            if (IsClient && !IsHost)
+            {
+                ready = GameObject.Find("ReadyButton");
+                ready.GetComponent<Button>().onClick.AddListener(TooglePlayerReadyServerRpc);
+            }
+        }
     }
+
 
     void Update()
     {
+        if (IsHost)
+        {
+            foreach(NetworkClient client in NetworkManager.Singleton.ConnectedClients.Values)
+            {
+                if (!client_id.Contains(client.ClientId))
+                {
+                    client_id.Add(client.ClientId);
+                    client_ready.Add(client.PlayerObject.GetComponent<PlayerController>().is_ready.Value);
+                }
+                else
+                {
+                    client_ready[client_id.IndexOf(client.ClientId)] = client.PlayerObject.GetComponent<PlayerController>().is_ready.Value;
+                }
+            }
+        }
         if (IsOwner) PlayerMovement();
     }
 
@@ -44,5 +73,12 @@ public class PlayerController : CharacterController
         main_camera.localPosition = new Vector3(0, 6, 4);
         main_camera.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TooglePlayerReadyServerRpc()
+    {
+            is_ready.Value = !is_ready.Value;
+    }
+
 
 }

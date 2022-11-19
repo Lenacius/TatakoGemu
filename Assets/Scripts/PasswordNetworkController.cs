@@ -6,12 +6,14 @@ using System.Collections.Generic;
 
 public class PasswordNetworkController : MonoBehaviour
 {
+    [SerializeField] private Canvas canvas;
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private TMP_InputField nameInputField;
     [SerializeField] private GameObject passwordEntryUI;
     [SerializeField] private GameObject leaveButton;
     [SerializeField] private GameObject readyButton;
     [SerializeField] private GameObject startButton;
+    //[SerializeField] private GameObject readyStatePanel;
 
     private void Start()
     {
@@ -58,6 +60,8 @@ public class PasswordNetworkController : MonoBehaviour
 
         passwordEntryUI.SetActive(true);
         leaveButton.SetActive(false);
+        readyButton.SetActive(false);
+        startButton.SetActive(false);
     }
 
     private void HandleServerStarted()
@@ -74,9 +78,12 @@ public class PasswordNetworkController : MonoBehaviour
         {
             passwordEntryUI.SetActive(false);
             leaveButton.SetActive(true);
-            if (NetworkManager.Singleton.IsClient) readyButton.SetActive(true);
-            else if (NetworkManager.Singleton.IsHost) startButton.SetActive(true);
+            if (NetworkManager.Singleton.IsHost) startButton.SetActive(true);
+            else if (NetworkManager.Singleton.IsClient) readyButton.SetActive(true);
         }
+
+        //if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
+        //    Instantiate(readyStatePanel, canvas.transform);
     }
 
     private void HandleClientDisconnect(ulong clientId)
@@ -134,6 +141,6 @@ public class PasswordNetworkController : MonoBehaviour
 
     //public void Ready()
     //{
-    //    if(NetworkManager.Singleton.Is)
+    //    if (NetworkManager.Singleton.Is)
     //}
 }

@@ -13,7 +13,7 @@ public class PasswordNetworkController : MonoBehaviour
     [SerializeField] private GameObject leaveButton;
     [SerializeField] private GameObject readyButton;
     [SerializeField] private GameObject startButton;
-    //[SerializeField] private GameObject readyStatePanel;
+    [SerializeField] private GameObject readyStatePanel;
 
     private void Start()
     {
@@ -78,12 +78,13 @@ public class PasswordNetworkController : MonoBehaviour
         {
             passwordEntryUI.SetActive(false);
             leaveButton.SetActive(true);
-            if (NetworkManager.Singleton.IsHost) startButton.SetActive(true);
+            if (NetworkManager.Singleton.IsHost)
+            {
+                startButton.SetActive(true);
+                readyStatePanel.SetActive(true);
+            }
             else if (NetworkManager.Singleton.IsClient) readyButton.SetActive(true);
         }
-
-        //if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
-        //    Instantiate(readyStatePanel, canvas.transform);
     }
 
     private void HandleClientDisconnect(ulong clientId)
@@ -94,6 +95,7 @@ public class PasswordNetworkController : MonoBehaviour
             leaveButton.SetActive(false);
             readyButton.SetActive(false);
             startButton.SetActive(false);
+            readyStatePanel.SetActive(false);
         }
     }
 
@@ -139,8 +141,28 @@ public class PasswordNetworkController : MonoBehaviour
         response.Pending = false;
     }
 
-    //public void Ready()
-    //{
-    //    if (NetworkManager.Singleton.Is)
-    //}
+
+    private void Update()
+    {
+        
+        if (NetworkManager.Singleton.IsHost)
+        {
+            TextMeshProUGUI message = GameObject.Find("PlayersReadyMessage").GetComponent<TextMeshProUGUI>();
+            if (PlayersReady())
+                message.text = "All players ready!";
+            else
+                message.text = "Not all players ready...";
+        }
+    }
+
+    private bool PlayersReady()
+    {
+        foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClients.Values)
+        {
+            if (client.ClientId != 0 && !client.PlayerObject.GetComponent<PlayerController>().is_ready.Value)
+                return false;
+        }
+        
+        return true;
+    }
 }

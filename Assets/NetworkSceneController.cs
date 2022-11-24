@@ -7,8 +7,17 @@ public class NetworkSceneController : NetworkBehaviour
 {
     public void GotoStage1()
     {
+        if (IsHost)
+        {
+            DeleteLevelSpecificObjectsClientRpc();
+            NetworkManager.SceneManager.LoadScene("Stage1", LoadSceneMode.Additive);
+        }
+    }
+
+    [ClientRpc]
+    public void DeleteLevelSpecificObjectsClientRpc()
+    {
         GameObject.Destroy(GameObject.Find("Level"));
-        NetworkManager.SceneManager.LoadScene("Stage1", LoadSceneMode.Additive);
     }
 
 //#if UNITY_EDITOR

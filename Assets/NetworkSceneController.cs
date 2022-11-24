@@ -10,6 +10,7 @@ public class NetworkSceneController : NetworkBehaviour
         if (IsHost)
         {
             DeleteLevelSpecificObjectsClientRpc();
+            ResetClientReadyClientRpc();
             NetworkManager.SceneManager.LoadScene("Stage1", LoadSceneMode.Additive);
         }
     }
@@ -18,6 +19,15 @@ public class NetworkSceneController : NetworkBehaviour
     public void DeleteLevelSpecificObjectsClientRpc()
     {
         GameObject.Destroy(GameObject.Find("Level"));
+    }
+
+    [ClientRpc]
+    public void ResetClientReadyClientRpc()
+    {
+        if(IsClient && !IsHost)
+        {
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().TooglePlayerReadyServerRpc();
+        }
     }
 
 //#if UNITY_EDITOR

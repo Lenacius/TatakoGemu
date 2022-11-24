@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using System.Text;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class PasswordNetworkController : MonoBehaviour
 {
@@ -149,9 +150,15 @@ public class PasswordNetworkController : MonoBehaviour
         {
             TextMeshProUGUI message = GameObject.Find("PlayersReadyMessage").GetComponent<TextMeshProUGUI>();
             if (PlayersReady())
+            {
+                startButton.GetComponent<Button>().interactable = true;
                 message.text = "All players ready!";
+            }
             else
+            {
+                startButton.GetComponent<Button>().interactable = false;
                 message.text = "Not all players ready...";
+            }
         }
     }
 

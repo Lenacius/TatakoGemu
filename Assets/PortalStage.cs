@@ -6,43 +6,47 @@ using UnityEngine.SceneManagement;
 
 public class PortalStage : NetworkBehaviour
 {
-    private NetworkVariable<int> playerCount = new NetworkVariable<int>();
+    [SerializeField] private NetworkSceneController sceneController;
 
     public void Awake()
     {
         this.NetworkObject.Spawn();
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        if (IsServer || IsHost)
-        {
-            playerCount.Value = 0;
-        }
+        sceneController = GameObject.Find("NetworkSceneController").GetComponent<NetworkSceneController>();
     }
 
     private void Update()
     {
         
-        Debug.Log(playerCount.Value);
-        Debug.Log(NetworkManager.Singleton.ConnectedClients.Count);
+        //Debug.Log(playerCount.Value);
+        //Debug.Log(NetworkManager.Singleton.ConnectedClients.Count);
         if (IsServer || IsHost)
         {
-            if(playerCount.Value == NetworkManager.Singleton.ConnectedClients.Count)
+            if(PlayersReady())
             {
-                GameObject.Destroy(GameObject.Find("Level"));
-                SceneManager.LoadScene("Stage2", LoadSceneMode.Additive);
+                sceneController.GotoStage2();
             }
+        }
+
+        if(NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().is_ready.Value)
+        {
+            NetworkManager.Singleton.LocalClient.PlayerObject.transform.position = this.transform.position;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        NetworkObject player = NetworkManager.Singleton.ConnectedClients[NetworkManager.Singleton.LocalClientId].PlayerObject;
-
-        player.transform.position = transform.position;
-
-        this.playerCount.Value++;
+        if (IsClient)
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().TooglePlayerReadyServerRpc();
     }
 
+    private bool PlayersReady()
+    {
+        foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClients.Values)
+        {
+            if (!client.PlayerObject.GetComponent<PlayerController>().is_ready.Value)
+                return false;
+        }
+
+        return true;
+    }
 }

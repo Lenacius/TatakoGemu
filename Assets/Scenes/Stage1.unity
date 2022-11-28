@@ -915,37 +915,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4195625530422086193, guid: cb619d5a71196ae4a9f5f3e85c06ef89, type: 3}
   m_PrefabInstance: {fileID: 294725761}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &353341355
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 353341356}
-  m_Layer: 0
-  m_Name: NetworkSceneController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &353341356
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 353341355}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 687636961}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &373554895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1295,7 +1264,7 @@ Transform:
   - {fileID: 485598662}
   - {fileID: 426414093}
   m_Father: {fileID: 687636961}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &485598661
 PrefabInstance:
@@ -1688,7 +1657,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 629492177}
-  - {fileID: 353341356}
   - {fileID: 452634080}
   - {fileID: 1306699252}
   m_Father: {fileID: 0}
@@ -4009,7 +3977,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3582274030865418239, guid: ee77c386f2b7ff444bb7957a8e88e724, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3582274030865418239, guid: ee77c386f2b7ff444bb7957a8e88e724, type: 3}
       propertyPath: m_LocalPosition.x

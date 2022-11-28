@@ -15,6 +15,16 @@ public class NetworkSceneController : NetworkBehaviour
         }
     }
 
+    public void GotoStage2()
+    {
+        if (IsHost)
+        {
+            DeleteLevelSpecificObjectsClientRpc();
+            ResetClientReadyClientRpc();
+            NetworkManager.SceneManager.LoadScene("Stage2", LoadSceneMode.Additive);
+        }
+    }
+
     [ClientRpc]
     public void DeleteLevelSpecificObjectsClientRpc()
     {

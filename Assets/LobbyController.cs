@@ -17,9 +17,6 @@ using TMPro;
 
 public class LobbyController : MonoBehaviour
 {
-    //[SerializeField] private GameObject quickPlayButton;
-    //[SerializeField] private GameObject createLobbyButton;
-    //[SerializeField] private GameObject joinLobbyButton;
     [SerializeField] private GameObject lobbyCanvas;
 
     private Lobby connectedLobby;
@@ -69,6 +66,7 @@ public class LobbyController : MonoBehaviour
 
             SetTransformAsClient(a);
 
+            NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes("XIX");
             NetworkManager.Singleton.StartClient();
             return lobby;
         }

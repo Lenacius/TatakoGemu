@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode.Transports.UTP;
 using System.Collections.Generic;
 
 public class PlayerController : CharacterController
@@ -26,6 +27,17 @@ public class PlayerController : CharacterController
 
     void Update()
     {
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1",  // The IP address is a string
+                                                                                    (ushort)12345, // The port number is an unsigned short
+                                                                                    "0.0.0.0" // The server listen address is a string.
+                                                                                    );
+        Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address);
+        Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Port);
+        Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.ServerListenAddress);
+
+        //Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().);
+        //Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ServerListenPort);
+
         if (IsHost)
         {
             foreach(NetworkClient client in NetworkManager.Singleton.ConnectedClients.Values)

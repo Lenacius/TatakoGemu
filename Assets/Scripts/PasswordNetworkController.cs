@@ -1,6 +1,20 @@
-using Unity.Netcode;
-using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+using System.Threading.Tasks;
 using TMPro;
+
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
+using UnityEngine;
+
 using System.Text;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -15,6 +29,22 @@ public class PasswordNetworkController : MonoBehaviour
     [SerializeField] private GameObject readyButton;
     [SerializeField] private GameObject startButton;
     [SerializeField] private GameObject readyStatePanel;
+    [SerializeField] private GameObject joinCodePanel;
+
+    private UnityTransport transport;
+    private const int MaxPlayers = 5;
+
+    //private async void Awake()
+    //{
+    //    transport = FindObjectOfType<UnityTransport>();
+    //    await Authenticate();
+    //}
+
+    //private async Task Authenticate()
+    //{
+    //    await UnityServices.InitializeAsync();
+    //    await AuthenticationService.Instance.SignInAnonymouslyAsync();
+    //}
 
     private void Start()
     {
@@ -32,7 +62,12 @@ public class PasswordNetworkController : MonoBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
     }
 
-    public void Host() {
+    public async void Host() {
+        Allocation a = await RelayService.Instance.CreateAllocationAsync(MaxPlayers);
+        joinCodePanel.GetComponentInChildren<TextMeshProUGUI>().text = await RelayService.Instance.GetJoinCodeAsync(a.AllocationId);
+
+        transport.SetHostRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData);
+
         NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
         NetworkManager.Singleton.StartHost();
     }
@@ -42,7 +77,10 @@ public class PasswordNetworkController : MonoBehaviour
         public string name;
         public string password;
     }
-    public void Client() {
+    public async void Client() {
+        JoinAllocation a = await RelayService.Instance.JoinAllocationAsync(passwordInputField.text);
+        transport.SetClientRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData, a.HostConnectionData);
+
         NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes(passwordInputField.text);
         NetworkManager.Singleton.StartClient();
     }
@@ -105,7 +143,9 @@ public class PasswordNetworkController : MonoBehaviour
         var clientId = request.ClientNetworkId;
         var connectionData = request.Payload;
 
-        bool approveConnection = Encoding.ASCII.GetString(connectionData) == passwordInputField.text;
+        //bool approveConnection = Encoding.ASCII.GetString(connectionData) == passwordInputField.text;
+        bool approveConnection = true;
+        
 
         Vector3 spawnPos = Vector3.zero;
         Quaternion spawnRot = Quaternion.identity;

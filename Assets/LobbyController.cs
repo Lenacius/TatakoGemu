@@ -19,9 +19,12 @@ public class LobbyController : MonoBehaviour
 {
     [SerializeField] private GameObject lobbyCanvas;
     [SerializeField] private GameObject preGameCanvas;
+    [SerializeField] private GameObject startButton;
+    [SerializeField] private GameObject readyButton;
     [SerializeField] private TextMeshProUGUI loobyCodeDisplay;
     [SerializeField] private TMP_InputField loobyCodeInput;
     [SerializeField] private TMP_InputField nicknameInput;
+    [SerializeField] public NetworkVariable<int> playersConnected = new NetworkVariable<int>();
 
     private Lobby connectedLobby;
     private QueryResponse lobbies;
@@ -29,36 +32,39 @@ public class LobbyController : MonoBehaviour
     private const string JoinCodeKey = "j";
     private string playerId;
 
+    //private void Update() //DEBUG ONLY
+    //{
+    //    Debug.LogWarning($"PlayerID: {playerId}");
+    //    if (connectedLobby != null)
+    //    {
+    //        Debug.LogWarning($"Lobby id: {connectedLobby.Id}");
+    //        Debug.LogWarning($"Player count in lobby: {connectedLobby.Players.Count}");
+    //        if (NetworkManager.Singleton.IsHost)
+    //            Debug.LogWarning($"Player count in network: {NetworkManager.Singleton.ConnectedClients.Count}");
+    //    }
+    //}
+
+    private async void Awake() {
+        transport = FindObjectOfType<UnityTransport>();
+        await Authenticate();
+    }
+
+    private async Task Authenticate() {
+        var options = new InitializationOptions();
+        await UnityServices.InitializeAsync(options);
+
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        playerId = AuthenticationService.Instance.PlayerId;
+    }
+
     private void Start() {
         NetworkManager.Singleton.OnServerStarted += HandleServerStarted;
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
     }
 
-    private void HandleClientDisconnect(ulong clientId)
-    {
-        throw new NotImplementedException(); // add a verification if it is host
-    }
-
-    private void HandleClientConnected(ulong clientId)
-    {
-        if (NetworkManager.Singleton.IsClient)
-            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().SetPlayerNameServerRpc(nicknameInput.text.ToUpper());
-    }
-
-    private void HandleServerStarted() {
-        if (NetworkManager.Singleton.IsHost)
-            HandleClientConnected(NetworkManager.Singleton.LocalClientId);
-    }
-
-    private async void Awake() {
-        await Authenticate();
-        transport = FindObjectOfType<UnityTransport>();
-    }
-
     public async void CreateOrJoinLobby(int mode) {
-        switch (mode)
-        {
+        switch (mode) {
             case 0:
                 connectedLobby = await QuickJoinLobby() ?? await CreateLobby();
                 break;
@@ -70,21 +76,13 @@ public class LobbyController : MonoBehaviour
                 break;
         }
 
-        if (connectedLobby != null)
-        {
-            preGameCanvas.SetActive(true);
+        if (connectedLobby != null) {
             lobbyCanvas.SetActive(false);
+            preGameCanvas.SetActive(true);
+            if (NetworkManager.Singleton.IsHost) startButton.SetActive(true);
+            else readyButton.SetActive(true);
         }
 
-    }
-
-    private async Task Authenticate() {
-        var options = new InitializationOptions();
-
-        await UnityServices.InitializeAsync(options);
-
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        playerId = AuthenticationService.Instance.PlayerId;
     }
 
     private async Task<Lobby> QuickJoinLobby() {
@@ -108,12 +106,13 @@ public class LobbyController : MonoBehaviour
     private async Task<Lobby> JoinLobby() {
         try {
             var lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(loobyCodeInput.text.ToUpper());//Change to lobby code
+            loobyCodeDisplay.text = lobby.LobbyCode;
 
             var a = await RelayService.Instance.JoinAllocationAsync(lobby.Data[JoinCodeKey].Value);
 
             SetTransformAsClient(a);
 
-            NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes("XIX");
+            NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes("DummyData");
             NetworkManager.Singleton.StartClient();
             return lobby;
         }
@@ -129,12 +128,12 @@ public class LobbyController : MonoBehaviour
 
             var a = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
             var joinCode = await RelayService.Instance.GetJoinCodeAsync(a.AllocationId);
-            loobyCodeDisplay.text = joinCode;
 
             var options = new CreateLobbyOptions {
                 Data = new Dictionary<string, DataObject> { { JoinCodeKey, new DataObject(DataObject.VisibilityOptions.Public, joinCode) } }
             };
             var lobby = await Lobbies.Instance.CreateLobbyAsync("Useless Lobby Name", maxPlayers, options);
+            loobyCodeDisplay.text = lobby.LobbyCode;
 
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
 
@@ -150,6 +149,39 @@ public class LobbyController : MonoBehaviour
         }
     }
 
+    public void Quit()
+    {
+        LeaveLobby();
+        NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().ChangeCameraToWorld();
+        if (NetworkManager.Singleton.IsHost)
+            NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
+        NetworkManager.Singleton.Shutdown();
+    }
+
+    public void LeaveLobby()
+    {
+        if (connectedLobby != null)
+            try {
+                StopAllCoroutines();
+
+                if (connectedLobby.HostId == playerId) Lobbies.Instance.DeleteLobbyAsync(connectedLobby.Id);
+                else {
+                    Debug.Log($"Removing Player < {playerId} > \n from lobby: {connectedLobby.Id}");
+                    Lobbies.Instance.RemovePlayerAsync(connectedLobby.Id, playerId);
+                }
+                
+                connectedLobby = null;
+                lobbyCanvas.SetActive(true);
+                preGameCanvas.SetActive(false);
+                startButton.SetActive(false);
+                readyButton.SetActive(false);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+    }
+
     private void SetTransformAsClient(JoinAllocation a) {
         transport.SetClientRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData, a.HostConnectionData);
     }
@@ -162,13 +194,17 @@ public class LobbyController : MonoBehaviour
         }
     }
 
-    private void OnDestroy() {
+    private void OnDestroy() { // provavelmente n precisa mais desse código
         try {
+            if (NetworkManager.Singleton.IsHost)
+                NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
+
             StopAllCoroutines();
             // todo: add a check to see if you're host
             if(connectedLobby != null) {
                 if (connectedLobby.HostId == playerId) Lobbies.Instance.DeleteLobbyAsync(connectedLobby.Id);
                 else Lobbies.Instance.RemovePlayerAsync(connectedLobby.Id, playerId);
+                connectedLobby = null;
             }
         }
         catch (Exception e) {
@@ -218,4 +254,33 @@ public class LobbyController : MonoBehaviour
         response.Rotation = spawnRot;
         response.Pending = false;
     }
+
+    private void HandleServerStarted() {
+        if (NetworkManager.Singleton.IsHost)
+            HandleClientConnected(NetworkManager.Singleton.LocalClientId);
+    }
+
+    private void HandleClientConnected(ulong clientId)
+    {
+        if (NetworkManager.Singleton.IsHost)
+            UpdatedPlayersConnectedServerRpc();
+
+        if (NetworkManager.Singleton.IsClient)
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().SetPlayerNameServerRpc(nicknameInput.text.ToUpper());
+    }
+
+    private void HandleClientDisconnect(ulong clientId) {
+        if (NetworkManager.Singleton.IsHost)
+            UpdatedPlayersConnectedServerRpc();
+
+        Debug.Log($"Client {clientId} disconnected");
+        //throw new NotImplementedException(); // add a verification if it is host
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UpdatedPlayersConnectedServerRpc()
+    {
+        playersConnected.Value = NetworkManager.Singleton.ConnectedClients.Count;
+    }
+
 }

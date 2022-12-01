@@ -51,7 +51,7 @@ public class CharacterController : NetworkBehaviour
     {
         if (!is_jumping)
         {
-            GetComponent<Rigidbody>().AddForce(new Vector3(0, 200, 0));
+            GetComponent<Rigidbody>().AddForce(new Vector3(0, 250, 0));
             is_jumping = true;
         }
     }
@@ -78,5 +78,9 @@ public class CharacterController : NetworkBehaviour
             is_jumping = false;
             was_swimming = false;
         }
+    }
+
+    public bool IsSwimming() {
+        return is_swimming;
     }
 }

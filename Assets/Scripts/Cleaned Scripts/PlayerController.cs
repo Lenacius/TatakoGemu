@@ -12,6 +12,7 @@ public class PlayerController : CharacterController
     [SerializeField] public NetworkVariable<FixedString64Bytes> playerName = new NetworkVariable<FixedString64Bytes>();
     [SerializeField] public List<bool> client_ready;
     [SerializeField] public List<ulong> client_id;
+    [SerializeField] private Transform Body;
 
     public GameObject ready;
     private void Start()
@@ -50,6 +51,9 @@ public class PlayerController : CharacterController
 
     private void PlayerMovement()
     {
+        Body.rotation = transform.rotation;
+        if (IsSwimming()) Body.Rotate(new Vector3(90, 0, 0));
+
         if (Input.GetKey(KeyCode.W)) Move(Direction.UP);
         else if (Input.GetKey(KeyCode.S)) Move(Direction.DOWN);
         

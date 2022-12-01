@@ -34,17 +34,17 @@ public class PasswordNetworkController : MonoBehaviour
     private UnityTransport transport;
     private const int MaxPlayers = 5;
 
-    //private async void Awake()
-    //{
-    //    transport = FindObjectOfType<UnityTransport>();
-    //    await Authenticate();
-    //}
+    private async void Awake()
+    {
+        transport = FindObjectOfType<UnityTransport>();
+        await Authenticate();
+    }
 
-    //private async Task Authenticate()
-    //{
-    //    await UnityServices.InitializeAsync();
-    //    await AuthenticationService.Instance.SignInAnonymouslyAsync();
-    //}
+    private async Task Authenticate()
+    {
+        await UnityServices.InitializeAsync();
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+    }
 
     private void Start()
     {

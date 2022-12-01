@@ -18,12 +18,38 @@ using TMPro;
 public class LobbyController : MonoBehaviour
 {
     [SerializeField] private GameObject lobbyCanvas;
+    [SerializeField] private GameObject preGameCanvas;
+    [SerializeField] private TextMeshProUGUI loobyCodeDisplay;
+    [SerializeField] private TMP_InputField loobyCodeInput;
+    [SerializeField] private TMP_InputField nicknameInput;
 
     private Lobby connectedLobby;
     private QueryResponse lobbies;
     private UnityTransport transport;
     private const string JoinCodeKey = "j";
     private string playerId;
+
+    private void Start() {
+        NetworkManager.Singleton.OnServerStarted += HandleServerStarted;
+        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
+    }
+
+    private void HandleClientDisconnect(ulong clientId)
+    {
+        throw new NotImplementedException(); // add a verification if it is host
+    }
+
+    private void HandleClientConnected(ulong clientId)
+    {
+        if (NetworkManager.Singleton.IsClient)
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().SetPlayerNameServerRpc(nicknameInput.text.ToUpper());
+    }
+
+    private void HandleServerStarted() {
+        if (NetworkManager.Singleton.IsHost)
+            HandleClientConnected(NetworkManager.Singleton.LocalClientId);
+    }
 
     private async void Awake() {
         await Authenticate();
@@ -45,7 +71,10 @@ public class LobbyController : MonoBehaviour
         }
 
         if (connectedLobby != null)
+        {
+            preGameCanvas.SetActive(true);
             lobbyCanvas.SetActive(false);
+        }
 
     }
 
@@ -78,7 +107,7 @@ public class LobbyController : MonoBehaviour
 
     private async Task<Lobby> JoinLobby() {
         try {
-            var lobby = await Lobbies.Instance.JoinLobbyByCodeAsync("Lobby Code");//Change to lobby code
+            var lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(loobyCodeInput.text.ToUpper());//Change to lobby code
 
             var a = await RelayService.Instance.JoinAllocationAsync(lobby.Data[JoinCodeKey].Value);
 
@@ -89,7 +118,7 @@ public class LobbyController : MonoBehaviour
             return lobby;
         }
         catch (Exception e) {
-            Debug.Log($"Lobby with given code doesn't exists");
+            Debug.Log($"Lobby with code {loobyCodeInput.text.ToUpper()} doesn't exists");
             return null;
         }
     }
@@ -100,6 +129,7 @@ public class LobbyController : MonoBehaviour
 
             var a = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
             var joinCode = await RelayService.Instance.GetJoinCodeAsync(a.AllocationId);
+            loobyCodeDisplay.text = joinCode;
 
             var options = new CreateLobbyOptions {
                 Data = new Dictionary<string, DataObject> { { JoinCodeKey, new DataObject(DataObject.VisibilityOptions.Public, joinCode) } }
@@ -115,7 +145,7 @@ public class LobbyController : MonoBehaviour
             return lobby;
         }
         catch (Exception e) {
-            Debug.LogFormat("Failed creating a lobby");
+            Debug.LogFormat($"Failed creating a lobby: {e}");
             return null;
         }
     }

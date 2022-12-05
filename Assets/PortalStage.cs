@@ -8,10 +8,11 @@ public class PortalStage : NetworkBehaviour
 {
     [SerializeField] private NetworkSceneController sceneController;
 
-    public void Awake()
+    public void Start()
     {
-        this.NetworkObject.Spawn();
+        //this.NetworkObject.Spawn();
         sceneController = GameObject.Find("NetworkSceneController").GetComponent<NetworkSceneController>();
+        this.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -29,6 +30,7 @@ public class PortalStage : NetworkBehaviour
 
         if(NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().is_ready.Value)
         {
+            Debug.LogWarning($"Client {NetworkManager.Singleton.LocalClientId} locked in portal");
             NetworkManager.Singleton.LocalClient.PlayerObject.transform.position = this.transform.position;
         }
     }
@@ -36,7 +38,10 @@ public class PortalStage : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (IsClient)
-            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().TooglePlayerReadyServerRpc();
+        {
+            Debug.LogWarning("PORTAL ACTIVATED");
+            other.GetComponent<PlayerController>().SetPlayerReadyServerRpc(true);
+        }
     }
 
     private bool PlayersReady()

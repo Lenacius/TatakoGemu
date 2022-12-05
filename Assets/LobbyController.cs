@@ -15,7 +15,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class LobbyController : MonoBehaviour
+public class LobbyController : NetworkBehaviour
 {
     [SerializeField] private GameObject lobbyCanvas;
     [SerializeField] private GameObject preGameCanvas;
@@ -24,7 +24,8 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI loobyCodeDisplay;
     [SerializeField] private TMP_InputField loobyCodeInput;
     [SerializeField] private TMP_InputField nicknameInput;
-    [SerializeField] public NetworkVariable<int> playersConnected = new NetworkVariable<int>();
+
+    [SerializeField] public Dictionary<int, bool> playersInLobby = new Dictionary<int, bool>();
 
     private Lobby connectedLobby;
     private QueryResponse lobbies;
@@ -32,17 +33,32 @@ public class LobbyController : MonoBehaviour
     private const string JoinCodeKey = "j";
     private string playerId;
 
-    //private void Update() //DEBUG ONLY
-    //{
-    //    Debug.LogWarning($"PlayerID: {playerId}");
-    //    if (connectedLobby != null)
-    //    {
-    //        Debug.LogWarning($"Lobby id: {connectedLobby.Id}");
-    //        Debug.LogWarning($"Player count in lobby: {connectedLobby.Players.Count}");
-    //        if (NetworkManager.Singleton.IsHost)
-    //            Debug.LogWarning($"Player count in network: {NetworkManager.Singleton.ConnectedClients.Count}");
-    //    }
-    //}
+    private void Update() //DEBUG ONLY
+    {
+        if (IsHost)
+        {
+            foreach(var client in NetworkManager.ConnectedClients.Values)
+            {
+                playersInLobby[(int)client.ClientId] = client.PlayerObject.GetComponent<PlayerController>().is_ready.Value;
+            }
+        }
+
+        //// DEBUG FOR DICTIONARY VIEW
+        //foreach (var i in playersInLobby)
+        //{
+        //    Debug.LogWarning($"| {i.Key} | {i.Value} |");
+        //}
+
+        //// GENERAL DEBUG
+        //Debug.LogWarning($"PlayerID: {NetworkManager.Singleton.LocalClientId}");
+        //if (connectedLobby != null)
+        //{
+        //    Debug.LogWarning($"Lobby id: {connectedLobby.Id}");
+        //    Debug.LogWarning($"Player count in lobby: {connectedLobby.Players.Count}");
+        //    if (NetworkManager.Singleton.IsHost)
+        //        Debug.LogWarning($"Player count in network: {NetworkManager.Singleton.ConnectedClients.Count}");
+        //}
+    }
 
     private async void Awake() {
         transport = FindObjectOfType<UnityTransport>();
@@ -76,7 +92,10 @@ public class LobbyController : MonoBehaviour
                 break;
         }
 
-        if (connectedLobby != null) {
+        if (connectedLobby != null)
+        {
+            loobyCodeDisplay.text = connectedLobby.LobbyCode;
+
             lobbyCanvas.SetActive(false);
             preGameCanvas.SetActive(true);
             if (NetworkManager.Singleton.IsHost) startButton.SetActive(true);
@@ -105,8 +124,7 @@ public class LobbyController : MonoBehaviour
 
     private async Task<Lobby> JoinLobby() {
         try {
-            var lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(loobyCodeInput.text.ToUpper());//Change to lobby code
-            loobyCodeDisplay.text = lobby.LobbyCode;
+            var lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(loobyCodeInput.text.ToUpper());
 
             var a = await RelayService.Instance.JoinAllocationAsync(lobby.Data[JoinCodeKey].Value);
 
@@ -262,25 +280,56 @@ public class LobbyController : MonoBehaviour
 
     private void HandleClientConnected(ulong clientId)
     {
-        if (NetworkManager.Singleton.IsHost)
-            UpdatedPlayersConnectedServerRpc();
+        if (!playersInLobby.ContainsKey((int)clientId)) playersInLobby.Add((int)clientId, false);
+
+        PropagateToClients();
 
         if (NetworkManager.Singleton.IsClient)
             NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().SetPlayerNameServerRpc(nicknameInput.text.ToUpper());
     }
 
     private void HandleClientDisconnect(ulong clientId) {
-        if (NetworkManager.Singleton.IsHost)
-            UpdatedPlayersConnectedServerRpc();
+        // Handle locally
+        if (playersInLobby.ContainsKey((int)clientId)) playersInLobby.Remove((int)clientId);
 
-        Debug.Log($"Client {clientId} disconnected");
-        //throw new NotImplementedException(); // add a verification if it is host
+        // Propagate all clients
+        RemovePlayerClientRpc(clientId);
+
+
+        //Debug.Log($"Client {clientId} disconnected");
+
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void UpdatedPlayersConnectedServerRpc()
+    public void PropagateToClients()
     {
-        playersConnected.Value = NetworkManager.Singleton.ConnectedClients.Count;
+        foreach (var player in playersInLobby) {
+            UpdatePlayerClientRpc((ulong)player.Key, player.Value);
+        }
+    }
+
+    [ClientRpc]
+    private void UpdatePlayerClientRpc(ulong clientId, bool isReady)
+    {
+        if (IsServer) return;
+
+        if (!playersInLobby.ContainsKey((int)clientId)) playersInLobby.Add((int)clientId, isReady);
+        else playersInLobby[(int)clientId] = isReady;
+    }
+    
+    [ServerRpc]
+    public void UpdatePlayerServerRpc(ulong clientId, bool isReady)
+    {
+        if (!playersInLobby.ContainsKey((int)clientId)) playersInLobby.Add((int)clientId, isReady);
+        else playersInLobby[(int)clientId] = isReady;
+    }
+
+
+    [ClientRpc]
+    private void RemovePlayerClientRpc(ulong clientId)
+    {
+        if (IsServer) return;
+
+        if (playersInLobby.ContainsKey((int)clientId)) playersInLobby.Remove((int)clientId);
     }
 
 }

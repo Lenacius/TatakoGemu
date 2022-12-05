@@ -4,15 +4,16 @@ using UnityEngine.UI;
 using Unity.Netcode.Transports.UTP;
 using System.Collections.Generic;
 using Unity.Collections;
+using TMPro;
+using System;
 
 public class PlayerController : CharacterController
 {
     [SerializeField] public NetworkVariable<bool> is_ready = new NetworkVariable<bool>(false);
-    [SerializeField] public string playerNamePlaceholder;
     [SerializeField] public NetworkVariable<FixedString64Bytes> playerName = new NetworkVariable<FixedString64Bytes>();
-    [SerializeField] public List<bool> client_ready;
-    [SerializeField] public List<ulong> client_id;
+    [SerializeField] public string playerNamePlaceholder;
     [SerializeField] private Transform Body;
+    [SerializeField] private TextMeshPro playerNameDisplay;
 
     public GameObject ready;
     private void Start()
@@ -24,28 +25,29 @@ public class PlayerController : CharacterController
             {
                 ready = GameObject.Find("ReadyButton");
                 ready.GetComponent<Button>().onClick.AddListener(TooglePlayerReadyServerRpc);
+                //ready.GetComponent<Button>().onClick.AddListener(TooglePlayerReadyDebug);
+                is_ready.OnValueChanged += UpdateDictionary;
+                //playerName.OnValueChanged += DisplayName;
             }
         }
     }
 
+    //private void DisplayName(FixedString64Bytes previousValue, FixedString64Bytes newValue)
+    //{
+    //    playerNameDisplay.text = newValue.ToString();
+    //}
+
+    private void UpdateDictionary(bool previousValue, bool newValue)
+    {
+        //Debug.Log($"PLAYER {(int)NetworkManager.LocalClientId} HAS BECOME: {newValue}");
+        var lobby = GameObject.Find("LobbyController").GetComponent<LobbyController>();
+        lobby.playersInLobby[(int)NetworkManager.LocalClientId] = newValue;
+        //lobby.UpdatePlayerServerRpc(NetworkManager.LocalClientId, newValue);
+        lobby.PropagateToClients();
+    }
 
     void Update()
     {
-        if (IsHost)
-        {
-            foreach(NetworkClient client in NetworkManager.Singleton.ConnectedClients.Values)
-            {
-                if (!client_id.Contains(client.ClientId))
-                {
-                    client_id.Add(client.ClientId);
-                    client_ready.Add(client.PlayerObject.GetComponent<PlayerController>().is_ready.Value);
-                }
-                else
-                {
-                    client_ready[client_id.IndexOf(client.ClientId)] = client.PlayerObject.GetComponent<PlayerController>().is_ready.Value;
-                }
-            }
-        }
         if (IsOwner) PlayerMovement();
     }
 
@@ -70,8 +72,8 @@ public class PlayerController : CharacterController
     {
         Transform main_camera = GameObject.Find("Main Camera").transform;
         main_camera.parent = transform;
-        main_camera.localPosition = new Vector3(0, 6, 4);
-        main_camera.localRotation = Quaternion.Euler(new Vector3(45, -180, 0));
+        main_camera.localPosition = new Vector3(0, 5, 4);
+        main_camera.localRotation = Quaternion.Euler(new Vector3(30, -180, 0));
     }
 
     public void ChangeCameraToWorld()
@@ -88,10 +90,29 @@ public class PlayerController : CharacterController
     }
 
     [ServerRpc(RequireOwnership = false)]
+    public void SetPlayerReadyServerRpc(bool state)
+    {
+        is_ready.Value = state;
+    }
+
+    //public void TooglePlayerReadyDebug()
+    //{
+    //    var lobby = GameObject.Find("LobbyController").GetComponent<LobbyController>();
+    //    Debug.LogWarning($"KEY {(int)NetworkManager.Singleton.LocalClientId} NEW VALUE {is_ready.Value}");
+    //}
+
+    [ServerRpc(RequireOwnership = false)]
     public void SetPlayerNameServerRpc(string name) {
         //Debug.LogFormat("Name given to player" + name);
         playerName.Value = name;
-        playerNamePlaceholder = playerName.Value.ToString();
+        SetPlayerNameClientRpc(name);
+    }
+
+    [ClientRpc]
+    private void SetPlayerNameClientRpc(string name)
+    {
+        playerNamePlaceholder = name;
+        playerNameDisplay.text = name;
     }
 
 

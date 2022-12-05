@@ -9,8 +9,8 @@ public class NetworkSceneController : NetworkBehaviour
     {
         if (IsHost)
         {
-            DeleteLevelSpecificObjectsClientRpc();
             ResetClientReadyClientRpc();
+            DeleteLevelSpecificObjectsClientRpc();
             NetworkManager.SceneManager.LoadScene("Stage1", LoadSceneMode.Additive);
         }
     }
@@ -19,10 +19,25 @@ public class NetworkSceneController : NetworkBehaviour
     {
         if (IsHost)
         {
-            DeleteLevelSpecificObjectsClientRpc();
             ResetClientReadyClientRpc();
+            DeleteLevelSpecificObjectsClientRpc();
             NetworkManager.SceneManager.LoadScene("Stage2", LoadSceneMode.Additive);
         }
+    }
+
+    public void GotoEnding()
+    {
+        if (IsHost)
+        {
+            ResetClientReadyClientRpc();
+            DeleteLevelSpecificObjectsClientRpc();
+            NetworkManager.SceneManager.LoadScene("Ending", LoadSceneMode.Single);
+        }
+    }
+
+    public void GotoLobby()
+    {
+        SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
     }
 
     [ClientRpc]
@@ -34,10 +49,7 @@ public class NetworkSceneController : NetworkBehaviour
     [ClientRpc]
     public void ResetClientReadyClientRpc()
     {
-        if(IsClient && !IsHost)
-        {
-            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().TooglePlayerReadyServerRpc();
-        }
+        NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().SetPlayerReadyServerRpc(false);
     }
 
 //#if UNITY_EDITOR

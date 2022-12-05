@@ -15,14 +15,18 @@ public class ButtonState : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.LogWarning($"Number of connected players: {lobby.playersConnected.Value}");
-        if(buttonNumber < lobby.playersConnected.Value) {
+
+        //Debug.LogWarning($"PLAYER {(int)NetworkManager.Singleton.LocalClientId} >>>>>>>>>>>>>>>>>>>>>>>>");
+        //Debug.LogWarning($"Player: {lobby.playersConnected.Value}");
+        if (lobby.playersInLobby.ContainsKey(buttonNumber)) {
+            //Debug.LogWarning($"PLAYER {(int)NetworkManager.Singleton.LocalClientId} is trying to ACCESS {buttonNumber} KEY.");
+            //Debug.LogWarning($"KEY VALUE {lobby.playersInLobby[buttonNumber]}");
+            playerState = lobby.playersInLobby[buttonNumber];
             notReadyImg.SetActive(true);
-            playerState = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().is_ready.Value;
-            if (NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>().is_ready.Value) readyImg.SetActive(true);
+            if (playerState) readyImg.SetActive(true);
             else readyImg.SetActive(false);
         }
         else notReadyImg.SetActive(false);
-
     }
+
 }

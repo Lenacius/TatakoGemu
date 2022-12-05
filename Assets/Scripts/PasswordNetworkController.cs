@@ -209,7 +209,6 @@ public class PasswordNetworkController : MonoBehaviour
             if (client.ClientId != 0 && !client.PlayerObject.GetComponent<PlayerController>().is_ready.Value)
                 return false;
         }
-        
         return true;
     }
 
